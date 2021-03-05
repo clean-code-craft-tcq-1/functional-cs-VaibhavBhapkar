@@ -5,6 +5,7 @@
     <Compile Include="BatteryLimits.cs"/>
     <Compile Include="BatteryExamine.cs"/>
     <Compile Include="FakeBatteryLimits.cs"/>
+    <Compile Include="BatteryFactors.cs"/>
   </ItemGroup>
   <Target Name="Build">
     <Csc Sources="@(Compile)"/>  
