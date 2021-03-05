@@ -10,11 +10,11 @@ public class BatteryExamine
     {
         this.batteryLimits = iBatteryLimits;
     }
-    public void BatteryIsOk(float batteryTemperature, float stateOfCharge, float chargeRate)
+    public void BatteryIsOk(BatteryFactors batteryFactors)
     {
-        CompareTemperatureWithRange(batteryTemperature);
-        CompareStateOfChargeWithRange(stateOfCharge);
-        CompareChargeRateWithRange(chargeRate);       
+        CompareTemperatureWithRange(batteryFactors.batteryTemprature);
+        CompareStateOfChargeWithRange(batteryFactors.batteryStateOfCharge);
+        CompareChargeRateWithRange(batteryFactors.batteryChargeRate);       
     }
     private void CompareTemperatureWithRange(float batteryTemperature)
     {
