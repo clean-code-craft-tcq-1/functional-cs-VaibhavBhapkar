@@ -5,82 +5,61 @@ using System.Text;
 
 public class BatteryExamine
 {
-    private readonly IBatteryLimits batteryLimits;
+     private readonly IBatteryLimits batteryLimits;
     public BatteryExamine(IBatteryLimits iBatteryLimits)
     {
         this.batteryLimits = iBatteryLimits;
     }
-    public bool BatteryIsOk(float batteryTemperature, float stateOfCharge, float chargeRate)
+    public void BatteryIsOk(float batteryTemperature, float stateOfCharge, float chargeRate)
     {
-        bool checkTemperatureResult = CompareTemperatureWithRange(batteryTemperature);
-        bool checkStateOfChargeResult = CompareStateOfChargeWithRange(stateOfCharge);
-        bool checkChargeRateResult = CompareChargeRateWithRange(chargeRate);
-        return (checkTemperatureResult && checkStateOfChargeResult && checkChargeRateResult);
+        CompareTemperatureWithRange(batteryTemperature);
+        CompareStateOfChargeWithRange(stateOfCharge);
+        CompareChargeRateWithRange(chargeRate);       
     }
-    private bool CompareTemperatureWithRange(float batteryTemperature)
+    private void CompareTemperatureWithRange(float batteryTemperature)
     {
-        if (batteryTemperature < batteryLimits.minTemperature || batteryTemperature > batteryLimits.maxTemperature)
+        if (batteryTemperature < batteryLimits.minTemperature)
         {
-            CompareTemperatureWithLimits(batteryTemperature);
-            DisplayMessage("Temperature");
-            return false;
+            DisplayMessage("Temperature","Low");
         }
-        return true;
-    }
-    public bool CompareStateOfChargeWithRange(float stateOfCharge)
-    {
-        if (stateOfCharge < batteryLimits.minStateOfCharge || stateOfCharge > batteryLimits.maxStateOfCharge)
+        else if(batteryTemperature > batteryLimits.maxTemperature)
         {
-            CompareStateOfChargeWithLimits(stateOfCharge);
-            DisplayMessage("State of Charge");
-            return false;
-        }
-        return true;
-    }
-    public bool CompareChargeRateWithRange(float chargeRate)
-    {
-        if (chargeRate > batteryLimits.minChargeRate)
-        {
-            DisplayMaximumLimit("Charge Rate", batteryLimits.minChargeRate);
-            DisplayMessage("Charge Rate");
-            return false;
-        }
-        return true;
-    }
-    public void CompareTemperatureWithLimits(float batteryTemperature)
-    {
-        if(batteryTemperature < batteryLimits.minTemperature)
-        {
-            DisplayMinimumLimit("Temperature", batteryLimits.minTemperature);
+            DisplayMessage("Temperature", "High");
         }
         else
         {
-            DisplayMaximumLimit("Temperature", batteryLimits.maxTemperature);
+            DisplayMessage("Temperature", "Normal");
         }
     }
-    public void CompareStateOfChargeWithLimits(float stateOfCharge)
+    public void CompareStateOfChargeWithRange(float stateOfCharge)
     {
         if (stateOfCharge < batteryLimits.minStateOfCharge)
         {
-            DisplayMinimumLimit("State Of Charge", batteryLimits.minStateOfCharge);
+            DisplayMessage("State of Charge", "Low");
+        }
+        else if (stateOfCharge > batteryLimits.maxStateOfCharge)
+        {
+            DisplayMessage("State of Charge", "High");
         }
         else
         {
-            DisplayMaximumLimit("State Of Charge", batteryLimits.maxStateOfCharge);
+            DisplayMessage("State of Charge", "Normal");
         }
     }
-   
-    static void DisplayMessage(string batteryParameter)
+    public void CompareChargeRateWithRange(float chargeRate)
     {
-        Console.WriteLine("{0} is out of range!", batteryParameter);
-    }
-    static void DisplayMinimumLimit(string batteryParameter,float batteryParameterLimit)
+        if (chargeRate > batteryLimits.minChargeRate)
+        {
+            DisplayMessage("Charge Rate", "High");
+        }
+        else
+        {
+            DisplayMessage("Charge Rate", "Normal");
+        }
+    }    
+    static void DisplayMessage(string batteryParameter,string breachParameter)
     {
-        Console.WriteLine("{0} value is less than minimun limit of {1}!", batteryParameter,batteryParameterLimit);
-    }
-    static void DisplayMaximumLimit(string batteryParameter,float batteryParameterLimit)
-    {
-        Console.WriteLine("{0} value is more than maximum limit of {1}!", batteryParameter,batteryParameterLimit);
+        Console.WriteLine("Battery {0} is {1}!", batteryParameter,breachParameter);
     }
 }
 
