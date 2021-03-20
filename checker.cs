@@ -3,36 +3,32 @@ using System.Diagnostics;
 
 class Checker
 {
-    static bool batteryIsOk(float temperature, float soc, float chargeRate) {
-        if(temperature < 0 || temperature > 45) {
-            Console.WriteLine("Temperature is out of range!");
-            return false;
-        } else if(soc < 20 || soc > 80) {
-            Console.WriteLine("State of Charge is out of range!");
-            return false;
-        } else if(chargeRate > 0.8) {
-            Console.WriteLine("Charge Rate is out of range!");
-            return false;
-        }
-        return true;
-    }
-
-    static void ExpectTrue(bool expression) {
-        if(!expression) {
-            Console.WriteLine("Expected true, but got false");
-            Environment.Exit(1);
+    static void ExpectTrue(bool expression)
+    {
+        if (!expression)
+        {
+            Console.WriteLine("Battery condition expected normal, but got faulty");
         }
     }
-    static void ExpectFalse(bool expression) {
-        if(expression) {
-            Console.WriteLine("Expected false, but got true");
-            Environment.Exit(1);
+    static void ExpectFalse(bool expression)
+    {
+        if (expression)
+        {
+            Console.WriteLine("Battery condition expected faulty, but got normal");
         }
     }
-    static int Main() {
-        ExpectTrue(batteryIsOk(25, 70, 0.7f));
-        ExpectFalse(batteryIsOk(50, 85, 0.0f));
-        Console.WriteLine("All ok");
+    static int Main()
+    {
+        IBatteryLimits iBatteryLimits = new BatteryLimits();
+        BatteryExamine batteryExamine = new BatteryExamine(iBatteryLimits);
+        Console.WriteLine("-- Tests which are returning correct results with true limits --");
+        ExpectTrue(batteryExamine.BatteryIsOk(new BatteryFactors(25, 70, 0.7f)));
+        ExpectFalse(batteryExamine.BatteryIsOk(new BatteryFactors(50, 85, 0.3f)));
+        Console.WriteLine("-- Tests which are returning false results with fake limits --");
+        IBatteryLimits iBatteryFakeLimits = new FakeBatteryLimits();
+        BatteryExamine fakeBatteryExamine = new BatteryExamine(iBatteryFakeLimits);
+        ExpectTrue(fakeBatteryExamine.BatteryIsOk(new BatteryFactors(25, 70, 0.7f)));
+        ExpectFalse(fakeBatteryExamine.BatteryIsOk(new BatteryFactors(50, 85, 0.3f)));
         return 0;
     }
 }

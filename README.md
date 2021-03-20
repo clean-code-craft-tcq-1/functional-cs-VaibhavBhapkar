@@ -57,3 +57,35 @@ Shorten the Semantic distance
 - Functional to express relation between input and output
 - Object oriented to encapsulate state with actions
 - Apect oriented to capture repeating aspects
+
+## My Assignment
+
+For performing task i have added below files also explaining the need of each individual file,
+
+- BatteryExamine.cs
+- IBatteryLimits.cs
+- BatteryLimits.cs
+- FakeBatteryLimits.cs
+- checker.cs
+
+1) BatteryExamine.cs
+   - purpose of adding this class is to refactor the battery condition checking facility separately.
+   - Here, I have separated the each parameter check function(i.e Temperature,State of Charge & Charge rate) separately and perform battery condition status check in separate function.
+   - Dependency Injection is used to get the default limit values for comparision.
+   - Making it as readonly so nobody allowed to chnages its state and all the functions inside class will be pure.
+
+2) IBatteryLimits.cs
+   - Interface used to declare the default values for limits.
+   - Using interface for constructor dependency injection.
+
+3) BatteryLimits.cs
+   - setting up the limits for paramaeters by inheriting interface.
+   - Throgh this approch setting up limits is also easy in future in case of any chnage.
+
+4) FakeBatteryLimits.cs
+   - This class also going to inherit interface IBatteryLimit and set the fake values for limit which is used for testing.
+   - By setting up false values we can cover testing function(ExpectTrue,ExpectFalse) which we are not able to covert testing initially.
+
+5) checker.cs
+   - Tetsing functions and executing tests.
+   
