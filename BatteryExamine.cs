@@ -5,61 +5,70 @@ using System.Text;
 
 public class BatteryExamine
 {
-     private readonly IBatteryLimits batteryLimits;
+    private readonly IBatteryLimits batteryLimits;
     public BatteryExamine(IBatteryLimits iBatteryLimits)
     {
         this.batteryLimits = iBatteryLimits;
     }
-    public void BatteryIsOk(BatteryFactors batteryFactors)
+    public bool BatteryIsOk(BatteryFactors batteryFactors)
     {
-        CompareTemperatureWithRange(batteryFactors.batteryTemprature);
-        CompareStateOfChargeWithRange(batteryFactors.batteryStateOfCharge);
-        CompareChargeRateWithRange(batteryFactors.batteryChargeRate);       
+        bool temperatureResult = CompareTemperatureWithRange(batteryFactors.batteryTemprature);
+        bool stateOfChargeResult = CompareStateOfChargeWithRange(batteryFactors.batteryStateOfCharge);
+        bool chargeRateResult = CompareChargeRateWithRange(batteryFactors.batteryChargeRate);
+        return (temperatureResult & stateOfChargeResult & chargeRateResult);
     }
-    private void CompareTemperatureWithRange(float batteryTemperature)
+    private bool CompareTemperatureWithRange(float batteryTemperature)
     {
         if (batteryTemperature < batteryLimits.minTemperature)
         {
-            DisplayMessage("Temperature","Low");
+            DisplayMessage("Temperature", "Low");
+            return false;
         }
-        else if(batteryTemperature > batteryLimits.maxTemperature)
+        else if (batteryTemperature > batteryLimits.maxTemperature)
         {
             DisplayMessage("Temperature", "High");
+            return false;
         }
         else
         {
             DisplayMessage("Temperature", "Normal");
+            return true;
         }
     }
-    public void CompareStateOfChargeWithRange(float stateOfCharge)
+    private bool CompareStateOfChargeWithRange(float stateOfCharge)
     {
         if (stateOfCharge < batteryLimits.minStateOfCharge)
         {
             DisplayMessage("State of Charge", "Low");
+            return false;
         }
         else if (stateOfCharge > batteryLimits.maxStateOfCharge)
         {
             DisplayMessage("State of Charge", "High");
+            return false;
         }
         else
         {
             DisplayMessage("State of Charge", "Normal");
+            return true;
         }
     }
-    public void CompareChargeRateWithRange(float chargeRate)
+    private bool CompareChargeRateWithRange(float chargeRate)
     {
         if (chargeRate > batteryLimits.minChargeRate)
         {
             DisplayMessage("Charge Rate", "High");
+            return false;
         }
         else
         {
             DisplayMessage("Charge Rate", "Normal");
+            return true;
         }
-    }    
-    static void DisplayMessage(string batteryParameter,string breachParameter)
+    }
+    static void DisplayMessage(string batteryParameter, string breachParameter)
     {
-        Console.WriteLine("Battery {0} is {1}!", batteryParameter,breachParameter);
+        Console.WriteLine("Battery {0} is {1}!", batteryParameter, breachParameter);
     }
 }
 
